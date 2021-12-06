@@ -8,10 +8,12 @@ import torch
 import matplotlib.pyplot as plt
 from model import ctrnn
 
-time = 400
+time = 500
 inputs = torch.zeros(time, 1, 1)
-W = 4.5*torch.ones(1,1)
-b = -2.25*torch.ones(1,1)
+dim = 1
+dt = 0.01
+W = 8*torch.ones(1,1)
+b = -4*torch.ones(1,1)
 tau = torch.ones(1,1)
 
 initial = 0*torch.ones(1, 1)
@@ -19,23 +21,23 @@ model = ctrnn(1, 0.1, initial, time)
 model.assignWeight(W, b, tau)
 states_0 = torch.squeeze(model(inputs)).detach().numpy()
 
-initial = 2*torch.ones(1, 1)
-model = ctrnn(1, 0.1, initial, time)
+initial = 0.25*torch.ones(1, 1)
+model = ctrnn(dim, dt, initial, time)
 model.assignWeight(W, b, tau)
 states_2 = torch.squeeze(model(inputs)).detach().numpy()
 
-initial = 2.25*torch.ones(1, 1)
-model = ctrnn(1, 0.1, initial, time)
+initial = 0.5*torch.ones(1, 1)
+model = ctrnn(dim, dt, initial, time)
 model.assignWeight(W, b, tau)
 states_225 = torch.squeeze(model(inputs)).detach().numpy()
 
-initial = 3*torch.ones(1, 1)
-model = ctrnn(1, 0.1, initial, time)
+initial = 0.75*torch.ones(1, 1)
+model = ctrnn(dim, dt, initial, time)
 model.assignWeight(W, b, tau)
 states_3 = torch.squeeze(model(inputs)).detach().numpy()
 
-initial = 5*torch.ones(1, 1)
-model = ctrnn(1, 0.1, initial, time)
+initial = torch.ones(1, 1)
+model = ctrnn(dim, dt, initial, time)
 model.assignWeight(W, b, tau)
 states_5 = torch.squeeze(model(inputs)).detach().numpy()
 

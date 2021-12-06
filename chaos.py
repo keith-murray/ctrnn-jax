@@ -11,23 +11,24 @@ from model import ctrnn
 time = 5000
 inputs = torch.zeros(time, 1, 3)
 dim = 3
+dt = 0.1
 W = torch.tensor([[5.422, -0.24, 0.535], 
                   [-0.018, 4.59, -2.25],
                   [2.750, 1.210, 3.885]]).T
 b = torch.tensor([[-4.108, -2.787, -1.114]])
 tau = torch.tensor([[1, 2.5, 1]])
 
-initial = torch.tensor([[2, 2.1, 1]])
-model = ctrnn(dim, 0.1, initial, time)
+initial = torch.tensor([[0.5, 0.5, 0.5]])
+model = ctrnn(dim, dt, initial, time)
 model.assignWeight(W, b, tau)
 states = torch.squeeze(model(inputs)).detach().numpy()
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 ax.plot(states[:,0], states[:,1], states[:,2])
-ax.set_xlabel('x_1')
-ax.set_ylabel('x_2')
-ax.set_zlabel('x_3')
+ax.set_xlabel('x_0')
+ax.set_ylabel('x_1')
+ax.set_zlabel('x_2')
 ax.set_title('Trajectories in 3D space for 3 neuron CTRNN')
 plt.show()
 

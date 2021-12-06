@@ -10,8 +10,7 @@ import torch.nn as nn
 class ctrnnCell(nn.Module):
     def __init__(self, dim, dt):
         super(ctrnnCell, self).__init__()
-        self.linear = nn.Linear(dim, dim, bias=False)
-        self.bias = nn.Parameter(torch.ones(1, dim))
+        self.linear = nn.Linear(dim, dim, bias=True)
         self.tau = nn.Parameter(torch.ones(1, dim))
         self.dt = torch.tensor(dt)
         
@@ -19,7 +18,7 @@ class ctrnnCell(nn.Module):
 
     def forward(self, state, inputs):
         dt_tau = self.dt/self.tau
-        f = self.linear(self.sig(state+self.bias))
+        f = self.sig(self.linear(state))
         state_plus_1 = state*(1-dt_tau) + dt_tau*(f + inputs)
         
         return state_plus_1
@@ -44,7 +43,7 @@ class ctrnn(nn.Module):
 
     def assignWeight(self, weight, bias, tau):
         self.ctrnnCell.linear.weight.data = weight
-        self.ctrnnCell.bias.data = bias
+        self.ctrnnCell.linear.bias.data = bias
         self.ctrnnCell.tau.data = tau
         
     
