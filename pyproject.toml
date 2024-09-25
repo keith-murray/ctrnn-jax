@@ -9,8 +9,17 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 jax = "0.4.31"
+pylint = "^3.2.6"
+pytest = "^8.3.2"
+black = "^24.8.0"
 
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.8.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
