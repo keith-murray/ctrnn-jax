@@ -12,6 +12,9 @@ jax = "0.4.31"
 pylint = "^3.2.6"
 pytest = "^8.3.2"
 black = "^24.8.0"
+flax = "^0.9.0"
+jupyterlab = "^4.2.5"
+matplotlib = "^3.9.2"
 
 
 [tool.poetry.group.dev.dependencies]

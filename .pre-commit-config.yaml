@@ -7,3 +7,4 @@ repos:
     rev: v3.3.1
     hooks:
       - id: pylint
+        entry: poetry run pylint
