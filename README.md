@@ -17,7 +17,7 @@ where $x_t\in\mathbb{R}^{n}$ is the voltage vector of recurrent neurons, $u_t\in
 
 Computational neuroscience studies typically train CT-RNNs via the backpropigation-through-time (BPTT) learning algorithm to [hypothesize low-dimensional dynamical systems](https://doi.org/10.1162/NECO_a_00409) underyling cognitive tasks. CT-RNNs, though, can be time-consuming to train due to the `for` loop inherent in their architecture. JAX eleminates the `for` loop by unrolling CT-RNNs in time via the [`scan` primative](https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.scan.html), creating a large feedforward network with shared parameters broadcasted to each layer. Using JAX's `scan` primative to implement and train CT-RNNs results in large speedups over existing deep learning frameworks, like [PyTorch](https://pytorch.org) and [TensorFlow](https://www.tensorflow.org).
 
-One challenge in using JAX is that [pseudorandomly generated numbers need to be generated with a key](https://jax.readthedocs.io/en/latest/notebooks/Common_Gotchas_in_JAX.html#random-numbers). For the $\eta_t$ vector, this results in broadcasting unique keys to all time steps of the CT-RNN through `scan`. Fortunately, Flax can gracefully manage [layer-dependent keys](https://flax-linen.readthedocs.io/en/latest/guides/flax_sharp_bits.html#flax-linen-dropout-layer-and-randomness).
+One challenge in using JAX is that [pseudorandomly generated numbers need to be generated with a key](https://jax.readthedocs.io/en/latest/notebooks/Common_Gotchas_in_JAX.html#random-numbers). For the $\eta_t$ vector, this requires broadcasting unique keys to all time steps of the CT-RNN through `scan`. Fortunately, Flax can gracefully manage [layer-dependent keys](https://flax-linen.readthedocs.io/en/latest/guides/flax_sharp_bits.html#flax-linen-dropout-layer-and-randomness).
 
 ## Installation
 ```
@@ -59,4 +59,4 @@ For an example of how to train the `CTRNNCell` via BPTT, refer to `scripts/train
 ## Examples
 Refer to the `scripts/dynamics_CTRNN.ipynb` notebook for examples of the various dynamical systems phenomena CT-RNNs can implement.
 
-Checkout [`keith-murray/attract-or-oscillate`](https://github.com/keith-murray/attract-or-oscillate) where I was able to train [16,128 CT-RNNs](https://openreview.net/forum?id=ql3u5ITQ5C) on the [MIT SuperCloud HPC](https://doi.org/10.1109/HPEC.2018.8547629) in about 60 hours via JAX.
+Checkout [`keith-murray/grokking-recurrent-networks`](https://github.com/keith-murray/grokking-recurrent-networks) where I was able to train [16,128 CT-RNNs](https://openreview.net/forum?id=ql3u5ITQ5C) on the [MIT SuperCloud HPC](https://doi.org/10.1109/HPEC.2018.8547629) in about 60 hours via JAX.

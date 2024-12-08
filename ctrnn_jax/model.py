@@ -1,4 +1,4 @@
-"""Continuous-time recurrent neural network (CTRNN) modules."""
+"""Continuous-time recurrent neural network (CTRNN) classes."""
 
 from functools import partial
 from typing import Any
@@ -139,12 +139,10 @@ class CTRNNCell(RNNCellBase):
 # pylint: disable=too-many-function-args
 class SimpleCTRNNCell(RNNCellBase):
     """
-    A simplified continuous-time recurrent neural network (CTRNN) cell
-    discretized and numerically integrated with Euler's method.
+    A simplified version of the `CTRNNCell` class.
 
-    This version removes the noise injection and output layer found
-    in more complex CTRNN implementations and uses an array of taus
-    (time constants) for each neuron.
+    This version excludes hidden unit noise, excludes output neurons,
+    and implements an array of taus (time constants).
 
     Attributes:
         hidden_features (int): Number of hidden neurons.

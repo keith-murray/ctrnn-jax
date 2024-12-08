@@ -1,4 +1,4 @@
-"""Tests for sample tasks."""
+"""Tests for the `SineWaveGenerator` task."""
 
 import jax.numpy as jnp
 from jax import random

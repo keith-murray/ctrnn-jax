@@ -1,4 +1,4 @@
-"""Tests for CTRNNCell cell."""
+"""Tests for the `CTRNNCell` class."""
 
 import jax.numpy as jnp
 from jax import random
@@ -9,7 +9,7 @@ from ctrnn_jax.model import CTRNNCell
 
 def test_ctrnn_outputs_1():
     """
-    Testing deterministic outputs of CTRNN cell
+    Testing deterministic outputs of CTRNN cell.
     """
     ctrnn = nn.RNN(
         CTRNNCell(
@@ -54,7 +54,7 @@ def test_ctrnn_outputs_1():
 
 def test_ctrnn_outputs_2():
     """
-    Testing nondeterministic outputs of CTRNN cell
+    Testing nondeterministic outputs of CTRNN cell.
     """
     key = random.PRNGKey(0)
 
@@ -107,7 +107,7 @@ def test_ctrnn_outputs_2():
 
 def test_ctrnn_noise_1():
     """
-    Testing nondeterministic outputs of CTRNN cells with same PRNG keys match
+    Testing nondeterministic outputs of CTRNN cells with same PRNG keys match.
     """
     key = random.PRNGKey(0)
     key, params_key = random.split(key, num=2)
@@ -153,7 +153,7 @@ def test_ctrnn_noise_1():
 
 def test_ctrnn_noise_2():
     """
-    Testing nondeterministic outputs of CTRNN cells with different PRNG keys do not match
+    Testing nondeterministic outputs of CTRNN cells with different PRNG keys do not match.
     """
     ctrnn = nn.RNN(
         CTRNNCell(

@@ -1,4 +1,4 @@
-"""Sample tasks of `SineWaveGenerator` and `SequentialModularArithmetic`."""
+"""Implementation of the `SineWaveGenerator` task."""
 
 from jax import random
 import jax.numpy as jnp
