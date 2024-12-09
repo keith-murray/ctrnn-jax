@@ -2,8 +2,9 @@
 
 import jax
 import jax.numpy as jnp
-from flax.training import train_state
 from flax import struct
+from flax import serialization
+from flax.training import train_state
 import optax
 from clu import metrics
 
@@ -90,3 +91,26 @@ def compute_metrics(
     metrics_updated = state.metrics.merge(metric_updates)
     state = state.replace(metrics=metrics_updated)
     return state
+
+
+class ModelParameters:
+    """
+    Class to save and load model parameters.
+
+    Note the class must be initialized with a train_state.
+    """
+
+    def __init__(self, state):
+        self.params = {"params": state.params}
+
+    def serialize(self, save_loc):
+        """Serialize parameters to `.bin` file."""
+        bytes_output = serialization.to_bytes(self.params)
+        with open(save_loc, "wb") as f:
+            f.write(bytes_output)
+
+    def deserialize(self, save_loc):
+        """Load parameters from `.bin` file."""
+        with open(save_loc, "rb") as f:
+            bytes_output = f.read()
+        self.params = serialization.from_bytes(self.params, bytes_output)

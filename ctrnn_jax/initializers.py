@@ -1,4 +1,4 @@
-"""Helper functions for `dynamics_of_CTRNN.ipynb."""
+"""Initializer functions for `dynamics_of_CTRNN.ipynb."""
 
 from functools import partial
 from typing import Any
