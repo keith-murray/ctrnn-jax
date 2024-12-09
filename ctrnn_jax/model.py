@@ -1,4 +1,4 @@
-"""Continuous-time recurrent neural network (CTRNN) classes."""
+"""Continuous-time recurrent neural network (CTRNN) cell classes."""
 
 from functools import partial
 from typing import Any
