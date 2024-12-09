@@ -54,9 +54,9 @@ output, rates = ctrnn.apply(
 ```
 Take note that [Flax's `nn.RNN` module](https://flax-linen.readthedocs.io/en/latest/api_reference/flax.linen/layers.html#flax.linen.RNN) is a wrapper for Jax's `scan` primative. Also take note of the `rngs` argument in the `ctrnn.apply` method that is necessary to seed the $\eta_t$ vector.
 
-For an example of how to train the `CTRNNCell` via BPTT, refer to `scripts/train_CTRNN.ipynb` notebook where a 100-neuron CT-RNN was trained for 1,000 epochs in less than 150 seconds.
+For an example of how to train the `CTRNNCell` via BPTT, refer to `scripts/train_ctrnn.py` where I train a 100-neuron CT-RNN for 1,000 epochs in less than 150 seconds.
 
 ## Examples
-Refer to the `scripts/dynamics_CTRNN.ipynb` notebook for examples of the various dynamical systems phenomena CT-RNNs can implement.
+Refer to the `scripts/dynamics_ctrnn.ipynb` notebook for examples of the various dynamical systems phenomena CT-RNNs can implement.
 
 Checkout [`keith-murray/grokking-recurrent-networks`](https://github.com/keith-murray/grokking-recurrent-networks) where I was able to train [16,128 CT-RNNs](https://openreview.net/forum?id=ql3u5ITQ5C) on the [MIT SuperCloud HPC](https://doi.org/10.1109/HPEC.2018.8547629) in about 60 hours via JAX.
