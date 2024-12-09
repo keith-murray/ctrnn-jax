@@ -8,6 +8,7 @@ from sklearn.decomposition import PCA
 def compute_pca(
     key,
     state,
+    params,
     task_tf,
     n_components,
 ):
@@ -16,7 +17,8 @@ def compute_pca(
 
     Args:
         key key (PRNGKey): random number generator used for seeding "noise_stream".
-        state (flax.training.train_state.TrainState): model state containing parameters.
+        state (flax.training.train_state.TrainState): model state object.
+        params (dict): model parameters dictionary.
         task_tf (tf.data.Dataset): training task in the form of TensorFlow Dataset.
         n_components (int): number of principal components to compute.
 
@@ -39,7 +41,7 @@ def compute_pca(
     for _inputs, _ in task_tf.as_numpy_iterator():
         key, test_key = random.split(key, num=2)
         _outputs, _rates = state.apply_fn(
-            {"params": state.params}, _inputs, rngs={"noise_stream": test_key}
+            params, _inputs, rngs={"noise_stream": test_key}
         )
 
         model_behavior["inputs"].append(_inputs)

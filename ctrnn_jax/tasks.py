@@ -72,7 +72,7 @@ class SineWaveGenerator:
 
         return features_tensor, labels_tensor
 
-    def generate_tf_dataset(self, batch_size):
+    def generate_tf_dataset(self, batch_size, shuffle=True):
         """
         Create a TensorFlow Dataset object from the provided batch size.
 
@@ -83,11 +83,12 @@ class SineWaveGenerator:
         dataset = tf.data.Dataset.from_tensor_slices((features_tensor, labels_tensor))
 
         subkey = self.generate_subkey()
-        dataset = dataset.shuffle(
-            buffer_size=len(features_tensor),
-            reshuffle_each_iteration=True,
-            seed=subkey[0].item(),
-        )
+        if shuffle:
+            dataset = dataset.shuffle(
+                buffer_size=len(features_tensor),
+                reshuffle_each_iteration=True,
+                seed=subkey[0].item(),
+            )
         dataset = dataset.batch(batch_size, drop_remainder=True)
         dataset = dataset.prefetch(2)
 
