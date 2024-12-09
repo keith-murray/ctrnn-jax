@@ -9,7 +9,12 @@ import matplotlib.pyplot as plt
 
 from ctrnn_jax.model import CTRNNCell
 from ctrnn_jax.tasks import SineWaveGenerator
-from ctrnn_jax.training import create_train_state, train_step, compute_metrics
+from ctrnn_jax.training import (
+    create_train_state,
+    train_step,
+    compute_metrics,
+    ModelParameters,
+)
 
 
 # Initialize a key
@@ -41,7 +46,6 @@ BATCH_SIZE = 8
 key, task_key = random.split(key, num=2)
 dataset = SineWaveGenerator(task_key, frequencies, TASK_TIME)
 tf_dataset_train = dataset.generate_tf_dataset(BATCH_SIZE)
-
 
 # Configure training parameters
 EPOCHS = 1000
@@ -89,3 +93,7 @@ plt.title("Loss over training epochs")
 plt.xlabel("Training epoch")
 plt.ylabel("Mean squared error")
 plt.savefig("./results/loss_curve_example.png")
+
+# Save model parameters
+params = ModelParameters(train_state)
+params.serialize("./data/params_example.bin")
