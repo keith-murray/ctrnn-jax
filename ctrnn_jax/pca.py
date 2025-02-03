@@ -1,42 +1,29 @@
-"""Analysis functions for trained CT-RNNs."""
+"""PCA functions to analyze trained CT-RNNs."""
 
 from jax import random
 import jax.numpy as jnp
 from sklearn.decomposition import PCA
 
 
-def compute_pca(
+def extract_task_data(
     key,
     state,
     params,
     task_tf,
-    n_components,
 ):
     """
-    Function to compute principal component analysis (PCA) on model rates.
+    Extracts inputs, rates, and outputs from the task dataset.
 
     Args:
-        key key (PRNGKey): random number generator used for seeding "noise_stream".
-        state (flax.training.train_state.TrainState): model state object.
-        params (dict): model parameters dictionary.
-        task_tf (tf.data.Dataset): training task in the form of TensorFlow Dataset.
-        n_components (int): number of principal components to compute.
+        key (PRNGKey): Random number generator for seeding "noise_stream".
+        state (flax.training.train_state.TrainState): Model state object.
+        params (dict): Model parameters dictionary.
+        task_tf (tf.data.Dataset): Training task dataset.
 
     Returns:
-        A tuple containing two elements:
-            model_behavior (dict): python dictionary containing:
-                inputs (jnp.ndarray): array of task inputs.
-                rates (jnp.ndarray): array of CT-RNN firing rates.
-                rates_pc (jnp.ndarray): array of principal components of `rates`.
-                outputs (jnp.ndarray): array of model outputs.
-            pca (sklearn.decomposition.PCA): sklearn PCA object.
+        tuple: (inputs, rates, outputs), each as a concatenated JAX array.
     """
-    model_behavior = {
-        "inputs": [],
-        "rates": [],
-        "rates_pc": [],
-        "outputs": [],
-    }
+    inputs, rates, outputs = [], [], []
 
     for _inputs, _ in task_tf.as_numpy_iterator():
         key, test_key = random.split(key, num=2)
@@ -44,21 +31,77 @@ def compute_pca(
             params, _inputs, rngs={"noise_stream": test_key}
         )
 
-        model_behavior["inputs"].append(_inputs)
-        model_behavior["rates"].append(_rates)
-        model_behavior["outputs"].append(_outputs)
+        inputs.append(_inputs)
+        rates.append(_rates)
+        outputs.append(_outputs)
 
-    model_behavior["inputs_list"] = jnp.concatenate(model_behavior["inputs"], axis=0)
-    rates_ = jnp.concatenate(model_behavior["rates"], axis=0)
-    model_behavior["rates"] = rates_
-    model_behavior["outputs"] = jnp.concatenate(model_behavior["outputs"], axis=0)
+    return (
+        jnp.concatenate(inputs, axis=0),
+        jnp.concatenate(rates, axis=0),
+        jnp.concatenate(outputs, axis=0),
+    )
 
-    rates_reshaped = rates_.reshape(-1, rates_.shape[-1])
+
+def compute_pca(key, state, params, task_tf, n_components=None):
+    """
+    Computes PCA on model rates.
+
+    Args:
+        key (PRNGKey): Random number generator for seeding "noise_stream".
+        state (flax.training.train_state.TrainState): Model state object.
+        params (dict): Model parameters dictionary.
+        task_tf (tf.data.Dataset): Training task in TensorFlow Dataset format.
+        n_components (int, optional): Number of principal components.
+
+    Returns:
+        tuple:
+            model_arrays (dict): Dictionary containing:
+                - "inputs" (jnp.ndarray): Task inputs.
+                - "rates" (jnp.ndarray): CT-RNN firing rates.
+                - "rates_pc" (jnp.ndarray): Principal components of `rates`.
+                - "outputs" (jnp.ndarray): Model outputs.
+            pca (sklearn.decomposition.PCA): Fitted PCA object.
+    """
+    inputs, rates, outputs = extract_task_data(key, state, params, task_tf)
+
+    model_arrays = {
+        "inputs": inputs,
+        "rates": rates,
+        "outputs": outputs,
+    }
+
+    rates_reshaped = rates.reshape(-1, rates.shape[-1])
+
     pca = PCA(n_components=n_components)
-    pca.fit(rates_reshaped)
+    rates_pc_reshaped = pca.fit_transform(rates_reshaped)
 
-    for i in range(rates_.shape[0]):
-        model_behavior["rates_pc"].append(pca.transform(rates_[i, :, :]))
+    model_arrays["rates_pc"] = rates_pc_reshaped.reshape(rates.shape)
 
-    model_behavior["rates_pc"] = jnp.stack(model_behavior["rates_pc"], axis=0)
-    return model_behavior, pca
+    return model_arrays, pca
+
+
+def cumulative_variance(
+    key,
+    state,
+    params,
+    task_tf,
+):
+    """
+    Computes the cumulative variance across all principal components.
+
+    Args:
+        key (PRNGKey): Random number generator for seeding "noise_stream".
+        state (flax.training.train_state.TrainState): Model state object.
+        params (dict): Model parameters dictionary.
+        task_tf (tf.data.Dataset): Training task in TensorFlow Dataset format.
+
+    Returns:
+        cumulative_variance (jnp.ndarray): A JAX array containing cumulative variance.
+    """
+    _, pca = compute_pca(
+        key,
+        state,
+        params,
+        task_tf,
+    )
+    return jnp.cumsum(jnp.array(pca.explained_variance_ratio_))
