@@ -1,3 +1,4 @@
+# pylint: disable=duplicate-code
 """Example of how to train `CTRNNCell`."""
 
 import jax.numpy as jnp
@@ -18,13 +19,13 @@ from ctrnn_jax.training import (
 
 
 # Initialize a key
-key = random.PRNGKey(0)
+key = random.PRNGKey(69)
 
 # Configure model parameters
 HIDDEN_NEURONS = 100
 OUTPUT_NEURONS = 1
-ALPHA = jnp.float32(0.1)
-NOISE_SCALAR = jnp.float32(0.1)
+ALPHA = jnp.float32(1.0)
+NOISE_SCALAR = jnp.float32(0.025)
 
 # Initialize model
 ctrnn = nn.RNN(
@@ -38,9 +39,9 @@ ctrnn = nn.RNN(
 )
 
 # Configure task parameters
-frequencies = jnp.arange(0.1, 0.5, 0.001)
+frequencies = jnp.arange(0.1, 0.6, 0.01)
 TASK_TIME = 50
-BATCH_SIZE = 8
+BATCH_SIZE = 10
 
 # Initalize task
 key, task_key = random.split(key, num=2)
@@ -92,7 +93,7 @@ plt.plot(jnp.arange(EPOCHS), metrics_history["train_loss"])
 plt.title("Loss over training epochs")
 plt.xlabel("Training epoch")
 plt.ylabel("Mean squared error")
-plt.savefig("./results/loss_curve_example.png")
+plt.savefig("./results/loss_curve.png")
 
 # Save model parameters
 params = ModelParameters(train_state)
