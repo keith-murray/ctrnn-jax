@@ -1,5 +1,5 @@
 # pylint: disable=duplicate-code
-"""Example of how to use the `compute_pca` function."""
+"""Example of how to use principal component analysis (PCA) functions."""
 
 import jax.numpy as jnp
 from jax import random
