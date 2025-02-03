@@ -75,7 +75,10 @@ def compute_pca(key, state, params, task_tf, n_components=None):
     pca = PCA(n_components=n_components)
     rates_pc_reshaped = pca.fit_transform(rates_reshaped)
 
-    model_arrays["rates_pc"] = rates_pc_reshaped.reshape(rates.shape)
+    rates_pc_shape = rates.shape
+    if n_components is not None:
+        rates_pc_shape = (rates_pc_shape[0], rates_pc_shape[1], n_components)
+    model_arrays["rates_pc"] = rates_pc_reshaped.reshape(rates_pc_shape)
 
     return model_arrays, pca
 
