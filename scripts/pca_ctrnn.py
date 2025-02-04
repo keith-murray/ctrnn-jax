@@ -15,10 +15,10 @@ from ctrnn_jax.pca import compute_pca, cumulative_variance
 
 
 # Initialize a key
-key = random.PRNGKey(0)
+key = random.PRNGKey(42069)
 
 # Configure model parameters
-HIDDEN_NEURONS = 100
+HIDDEN_NEURONS = 250
 OUTPUT_NEURONS = 1
 ALPHA = jnp.float32(1.0)
 NOISE_SCALAR = jnp.float32(0.00)
@@ -35,7 +35,7 @@ ctrnn = nn.RNN(
 )
 
 # Configure train_state
-LEARNING_RATE = 10e-4
+LEARNING_RATE = 0.00001
 init_array = jnp.ones([1, 10, 1])
 
 # Create train_state
@@ -52,9 +52,9 @@ params = ModelParameters(analysis_state)
 params.deserialize("./data/params_example.bin")
 
 # Configure task parameters
-frequencies = jnp.arange(0.1, 0.6, 0.01)
-TASK_TIME = 50
-BATCH_SIZE = 10
+frequencies = jnp.arange(0.1, 0.5, 0.01)
+TASK_TIME = 100
+BATCH_SIZE = 5
 
 # Initalize task
 key, task_key = random.split(key, num=2)
