@@ -55,12 +55,10 @@ output, rates = ctrnn.apply(
 Take note that [Flax's `nn.RNN` module](https://flax-linen.readthedocs.io/en/latest/api_reference/flax.linen/layers.html#flax.linen.RNN) is a wrapper for Jax's `scan` primative. Also note how the `rngs` argument in the `ctrnn.apply` method is necessary to seed the $\eta_t$ vector.
 
 ## Examples
-Refer to the `scripts/` directory in this repository for examples of how to train and analyze CT-RNNs. Our examples consist of: 
+Refer to the `scripts/` directory in this repository for examples of how to train and analyze CT-RNNs. These examples consist of: 
 - training a CT-RNN on the [sine wave generator task](https://github.com/keith-murray/sine-wave-generator)
 - visualizing its learned solution with principal component analysis (PCA)
 - identifying fixed-point attractors
 - performing linear stability analysis
 
-We also demonstrate how CT-RNNs can exhibit a variety of [nonlinear dynamical phenomena](https://www.stevenstrogatz.com/books/nonlinear-dynamics-and-chaos-with-applications-to-physics-biology-chemistry-and-engineering).
-
-Refer to our [rnn-workbench](https://github.com/keith-murray/rnn-workbench) repository for more examples of task-optimized CT-RNNs.
+Check out my [emergence-phase-codes](https://github.com/keith-murray/emergence-phase-codes) repo for more examples.
