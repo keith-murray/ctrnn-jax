@@ -2,7 +2,7 @@
 
 import jax.numpy as jnp
 from jax import random
-import tensorflow as tf
+import jax_dataloader as jdl
 
 from ctrnn_jax.tasks import SineWaveGenerator
 
@@ -79,7 +79,7 @@ def test_generate_jax_tensor():
 
 def test_generate_tf_dataset():
     """
-    Test that generate_tf_dataset creates a TensorFlow Dataset with the correct structure.
+    Test that generate_tf_dataset creates a jax_dataloader DataLoader with the correct structure.
     """
     key = random.PRNGKey(0)
     frequencies = jnp.array([0.1, 0.2, 0.3, 0.4])
@@ -87,22 +87,22 @@ def test_generate_tf_dataset():
     batch_size = 2
     dataset = SineWaveGenerator(key, frequencies, time)
 
-    tf_dataset = dataset.generate_tf_dataset(batch_size)
-    dataset_list = list(tf_dataset.as_numpy_iterator())
+    dataloader = dataset.generate_tf_dataset(batch_size)
+    dataloader_list = list(dataloader)
 
     # Check that the dataset is of the correct type
     assert isinstance(
-        tf_dataset, tf.data.Dataset
-    ), "The generated object is not a TensorFlow Dataset."
+        dataloader, jdl.DataLoader
+    ), "The generated object is not a jax_dataloader DataLoader."
 
     # Check that the number of batches is correct
     expected_batches = len(frequencies) // batch_size
     assert (
-        len(dataset_list) == expected_batches
-    ), f"Number of batches is incorrect. Got {len(dataset_list)}, expected {expected_batches}."
+        len(dataloader_list) == expected_batches
+    ), f"Number of batches is incorrect. Got {len(dataloader_list)}, expected {expected_batches}."
 
     # Check the shapes of the first batch
-    batch_x, batch_y = dataset_list[0]
+    batch_x, batch_y = dataloader_list[0]
     assert batch_x.shape == (
         batch_size,
         time,
@@ -115,9 +115,9 @@ def test_generate_tf_dataset():
     ), f"Batch label shape is incorrect. Got {batch_y.shape}, expected {(batch_size, time, 1)}."
 
     # Check for randomness in batching by generating the dataset again
-    new_dataset = dataset.generate_tf_dataset(batch_size)
-    new_dataset_list = list(new_dataset.as_numpy_iterator())
+    new_dataloader = dataset.generate_tf_dataset(batch_size)
+    new_dataloader_list = list(new_dataloader)
     assert any(
         not jnp.array_equal(x1, x2)
-        for (x1, y1), (x2, y2) in zip(dataset_list, new_dataset_list)
+        for (x1, y1), (x2, y2) in zip(dataloader_list, new_dataloader_list)
     ), "The datasets are not shuffled as expected."
