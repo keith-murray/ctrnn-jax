@@ -2,7 +2,7 @@
 
 from jax import random
 import jax.numpy as jnp
-import tensorflow as tf
+import jax_dataloader as jdl
 
 
 class SineWaveGenerator:
@@ -80,16 +80,12 @@ class SineWaveGenerator:
             tf.data.Dataset: A shuffled and batched TensorFlow Dataset object ready for training.
         """
         features_tensor, labels_tensor = self.generate_jax_tensor()
-        dataset = tf.data.Dataset.from_tensor_slices((features_tensor, labels_tensor))
-
-        subkey = self.generate_subkey()
-        if shuffle:
-            dataset = dataset.shuffle(
-                buffer_size=len(features_tensor),
-                reshuffle_each_iteration=True,
-                seed=subkey[0].item(),
-            )
-        dataset = dataset.batch(batch_size, drop_remainder=True)
-        dataset = dataset.prefetch(2)
-
-        return dataset
+        ds = jdl.ArrayDataset(features_tensor, labels_tensor)
+        return jdl.DataLoader(
+            ds,
+            'jax',
+            batch_size=batch_size,
+            shuffle=shuffle,
+            drop_last=True,
+            generator=self.generate_subkey(),
+        )
