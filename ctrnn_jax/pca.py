@@ -9,7 +9,7 @@ def extract_task_data(
     key,
     state,
     params,
-    task_tf,
+    task,
 ):
     """
     Extracts inputs, rates, and outputs from the task dataset.
@@ -18,14 +18,14 @@ def extract_task_data(
         key (PRNGKey): Random number generator for seeding "noise_stream".
         state (flax.training.train_state.TrainState): Model state object.
         params (dict): Model parameters dictionary.
-        task_tf (tf.data.Dataset): Training task dataset.
+        task (iterator): Training task dataset.
 
     Returns:
         tuple: (inputs, rates, outputs), each as a concatenated JAX array.
     """
     inputs, rates, outputs = [], [], []
 
-    for _inputs, _ in task_tf.as_numpy_iterator():
+    for _inputs, _ in task:
         key, test_key = random.split(key, num=2)
         _outputs, _rates = state.apply_fn(
             params, _inputs, rngs={"noise_stream": test_key}
